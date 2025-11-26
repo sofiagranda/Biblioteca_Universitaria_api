@@ -31,4 +31,25 @@ def prestamos_semana(request):
         "mensaje": mensaje
     })
 
+@api_view(['POST'])
+def prestamos_multa(request):
+    dias = request.data.get('diasRetraso', 0)
+    multa_por_dia = request.data.get('multaPorDia', 0)
 
+    if dias <= 0:
+        multa = 0
+        mensaje = "Sin retraso"
+    else:
+        multa = dias * multa_por_dia
+        if multa <= 5:
+            mensaje = "Retraso leve"
+        elif 5 < multa <= 15:
+            mensaje = "Retraso moderado"
+        else:
+            mensaje = "Retraso grave, revisar con administración"
+
+    return Response({
+        "diasRetraso": dias,
+        "multa": multa,
+        "mensaje": mensaje
+    })
